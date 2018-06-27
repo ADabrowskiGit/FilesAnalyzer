@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload</h2>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Submit').addClass('btn');
+            $('#Submit').addClass('btn-primary');
+
+
+        });
+
+        $(function() {
+
+  // We can attach the `fileselect` event to all file inputs on the page
+  $(document).on('change', ':file', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
+  });
+
+  // We can watch for our custom `fileselect` event like this
+  $(document).ready( function() {
+      $(':file').on('fileselect', function(event, numFiles, label) {
+
+          var input = $(this).parents('.input-group').find(':text'),
+              log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+          if( input.length ) {
+              input.val(log);
+          } else {
+              if( log ) alert(log);
+          }
+
+      });
+  });
+
+});
+    </script>
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-file input[type=file] {
+                position: absolute;
+                top: 0;
+                right: 0;
+                min-width: 100%;
+                min-height: 100%;
+                font-size: 100px;
+                text-align: right;
+                filter: alpha(opacity=0);
+                opacity: 0;
+                outline: none;
+                background: white;
+                cursor: inherit;
+                display: block;
+            }
+
+        .checkbox {
+            margin-top: 0px !important;
+            margin-bottom: 5px !important;
+        }
+
+            .checkbox label {
+                font-size: 15px;
+            }
+    </style>
+</head>
+<body>
+    <div>
+        <div>
+            @using (Html.BeginForm("Upload", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @*<div style="margin-bottom: 15px;">
+                    <div class="form-group">
+                        <h4 style="margin:15px;">Wybierz separatory:</h4>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                @Html.LabelFor(model => model.SpaceSeparator)
+                                @Html.CheckBoxFor(model => model.SpaceSeparator)
+                            </div>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                @Html.LabelFor(model => model.TabSeparator)
+                                @Html.CheckBoxFor(model => model.TabSeparator)
+                            </div>
+                        </div>
+
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                @Html.LabelFor(model => model.FileIncludeHeader)
+                                @Html.CheckBoxFor(model => model.FileIncludeHeader)
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+
+                <div class="container" style="margin-top: 75px;">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="input-group">
+                                <label class="input-group-btn">
+                                    <span class="btn btn-primary">
+                                        Browse&hellip; <input type="file" name="file" style="display: none;" multiple>
+                                    </span>
+                                </label>
+                                <input type="text" class="form-control" readonly>
+                                <input type="submit" name="Submit" id="Submit" value="Upload" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
+</body>
+</html>
