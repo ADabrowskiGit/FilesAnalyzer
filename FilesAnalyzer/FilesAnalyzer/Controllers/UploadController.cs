@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TikaOnDotNet.TextExtraction;
 
 namespace FilesAnalyzer.Controllers
 {
@@ -36,7 +37,28 @@ namespace FilesAnalyzer.Controllers
                     var myUniqueFileName = string.Format(@"{0}.{1}", DateTime.Now.Ticks, fileNameSplit[1]);
                     var path = Path.Combine(Server.MapPath("~/Files/"), myUniqueFileName);//TO DO change path
                     file.SaveAs(path);
-                    if ( new FDBFileRepository().AddFileRecord("author", "description", fileNameSplit[1], fileNameSplit[0], myUniqueFileName, file.ContentLength, "title"))
+
+                    string author = "";
+                    string title = "";
+                    string description = "";
+                    if (fileNameSplit[1] != "pdf")
+                    {
+                        var textExtractor = new TextExtractor();
+                        var wordDocContents = textExtractor.Extract(path);
+                        if (!wordDocContents.Metadata.TryGetValue("Author", out author))
+                        {
+                            author = "";
+                        }
+                        if (!wordDocContents.Metadata.TryGetValue("title", out title))
+                        {
+                            title = "";
+                        }
+                        if (!wordDocContents.Metadata.TryGetValue("description", out description))
+                        {
+                            description = "";
+                        }
+                    }
+                    if (new FDBFileRepository().AddFileRecord(author, description, fileNameSplit[1], fileNameSplit[0], myUniqueFileName, file.ContentLength, title))
                     {//succesfully uploaded
                         return RedirectToAction("UploadDocument");
                     }
