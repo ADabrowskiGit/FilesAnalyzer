@@ -22,31 +22,42 @@
 
         $(function() {
 
-  // We can attach the `fileselect` event to all file inputs on the page
-  $(document).on('change', ':file', function() {
-    var input = $(this),
-        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-    input.trigger('fileselect', [numFiles, label]);
-  });
+            // We can attach the `fileselect` event to all file inputs on the page
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
 
-  // We can watch for our custom `fileselect` event like this
-  $(document).ready( function() {
-      $(':file').on('fileselect', function(event, numFiles, label) {
+            // We can watch for our custom `fileselect` event like this
+            $(document).ready( function() {
+                $(':file').on('fileselect', function(event, numFiles, label) {
 
-          var input = $(this).parents('.input-group').find(':text'),
-              log = numFiles > 1 ? numFiles + ' files selected' : label;
+                    var input = $(this).parents('.input-group').find(':text'),
+                        log = numFiles > 1 ? numFiles + ' files selected' : label;
 
-          if( input.length ) {
-              input.val(log);
-          } else {
-              if( log ) alert(log);
-          }
+                    if( input.length ) {
+                        input.val(log);
+                    } else {
+                        if( log ) alert(log);
+                    }
 
-      });
-  });
+                });
+            });
 
-});
+        });
+    </script>
+    <script>
+    var EditNewsCommitCLick = function () {
+        var url = "@Url.Action("GetSearchData", "Upload")";
+        var value = $('#tbSearchValue').val();
+        var model = { tbSearchValue: value };
+        $.post(url, model, function (message) {
+            $('#IdOfDivToUpdate').html(message);
+        });
+
+    }
     </script>
     <style>
         .btn-file {
@@ -103,7 +114,15 @@
                 </div>
             }
         </div>
+        <div style="margin:30px;">
+            @using (Html.BeginForm("GetSearchData", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
 
+                @Html.TextBox("txtBox", null, new { @class = "form-control", id = "tbSearchValue", name = "tbSearchValue" })
+                <button type="button" class="btn btn-primary" style="margin-top:10px;" onclick="EditNewsCommitCLick()">Search</button>
+            }
+        </div>
+        <div id="IdOfDivToUpdate"></div>
     </div>
 
 </body>
